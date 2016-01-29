@@ -45,13 +45,15 @@ public class Main
 		System.out.println("data size = " + existed_data.size());
 		System.out.println("depth = " + depth);
 		
-		int[][] qb = {{8,6,7},{4,0,1},{5,2,3}};
+		int[][] qb = {{8,6,7},{4,1,5},{3,2,0}};
 		
 		show_board(qb);
 		String key = encode(qb);
+		
 		if (existed_data.containsKey(key))
 		{
 			System.out.println(existed_data.get(key));
+			find_solution(qb);
 		}
 		else
 		{
@@ -191,6 +193,40 @@ public class Main
 		else
 		{
 			return false;
+		}
+	}
+	
+	static void find_solution(int[][] b)
+	{
+		show_board(b);
+		
+		String key = encode(b);
+		int depth = existed_data.get(key);
+		
+		if (depth == 0)
+		{
+			return;
+		}
+		else
+		{
+			int y = get_blank_y(b);			
+			int x = get_blank_x(b);
+			
+			for (int i=0; i<4; i++) // consider 4 direction moves
+			{
+				if (is_legal_move(y,x,i))
+				{
+					int[][] new_board = make_move(b,y,x,i);
+					String new_key = encode(new_board);
+					int new_depth = existed_data.get(new_key);
+					
+					if (new_depth < depth)
+					{
+						find_solution(new_board);
+						return;
+					}
+				}
+			}
 		}
 	}
 
